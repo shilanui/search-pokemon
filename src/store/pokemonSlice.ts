@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   pokemons: [],
-  searchName: ''
+  searchName: 'ALL'
 };
 
 export const pokemonSlice = createSlice({

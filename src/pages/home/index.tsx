@@ -1,7 +1,7 @@
 import Card from "@/components/Card";
 import Loading from "@/components/Loading";
 import { queryAll, queryName } from "@/query/pokemon";
-import { IPokemonRes } from "@/type/pokemon";
+import { IPokemonRes, IPokemonStat } from "@/type/pokemon";
 import { useLazyQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -17,10 +17,11 @@ const Home = () => {
       setDataSource(data);
     },
   });
+
   const [getPokemonByName, { loading: loadingSearchName }] = useLazyQuery(
     queryName,
     {
-      variables: { name: searchName },
+      variables: { name: searchName === "ALL" ? "" : searchName },
       onCompleted: (data) => {
         if (data?.pokemon) {
           const obj: IPokemonRes = {
@@ -44,14 +45,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    getPokemons();
-  }, [getPokemons]);
-
-  useEffect(() => {
-    if (searchName && searchName !== "ALL") {
-      getPokemonByName();
-    } else {
+    if (searchName && searchName === "ALL") {
       getPokemons();
+    } else {
+      getPokemonByName();
     }
   }, [searchName, getPokemonByName, getPokemons]);
 
@@ -64,7 +61,7 @@ const Home = () => {
       ) : (
         <ul className="cards">
           {(dataSource?.pokemons?.length || 0) > 0 &&
-            dataSource?.pokemons?.map((pokemon: any, i: number) => {
+            dataSource?.pokemons?.map((pokemon: IPokemonStat, i: number) => {
               return (
                 <Card
                   img={pokemon?.image}
