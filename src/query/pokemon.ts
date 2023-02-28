@@ -37,6 +37,9 @@ query pokemons($first: Int!) {
       evolutions {
         number
         name
+        image
+        maxCP
+        maxHP
         weight {
           minimum
           maximum
@@ -47,6 +50,7 @@ query pokemons($first: Int!) {
         }
         classification
         types
+        weaknesses
         resistant
         attacks {
           fast {
@@ -102,6 +106,9 @@ query pokemon($id: String, $name: String){
       evolutions {
         number
         name
+        image
+        maxCP
+        maxHP
         weight {
           minimum
           maximum
@@ -113,6 +120,7 @@ query pokemon($id: String, $name: String){
         classification
         types
         resistant
+        weaknesses
         attacks {
           fast {
             name

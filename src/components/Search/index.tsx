@@ -1,27 +1,28 @@
+import { setSearchName } from "@/store/pokemonSlice";
 import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useDebounce } from "../../hook/useDebounce";
 
 const Search = () => {
-  // const { dataContextAction } = useDataContext();
+  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
-  const [isFullWidth, setIsFullWidth] = useState(false);
 
   const debouncedSearch = useDebounce(searchTerm, 1500);
 
   const handleSearch = (text: string) => {
-    setSearchTerm(text);
+    if (text === "") {
+      setSearchTerm("ALL");
+    } else {
+      setSearchTerm(text);
+    }
   };
 
-  const getSearchData = useCallback(async (text: string) => {
-    // dataContextAction.setSearchData(text);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleClickOutside = () => {
-    setIsFullWidth(false);
-  };
-
-  // const ref = useOutsideClick(handleClickOutside);
+  const getSearchData = useCallback(
+    async (text: string) => {
+      dispatch(setSearchName(text));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (debouncedSearch) {
@@ -33,11 +34,9 @@ const Search = () => {
     <div className="search">
       <input
         type="text"
-        className={`${isFullWidth ? "input-search-60" : "input-search"}`}
-        // ref={ref}
-        placeholder="Search Repositories"
+        className="input-search"
+        placeholder="Search Pokemon Name"
         onChange={(text) => handleSearch(text?.target?.value)}
-        onFocus={() => setIsFullWidth(true)}
       />
     </div>
   );

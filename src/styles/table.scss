@@ -1,0 +1,46 @@
+.l-inner {
+	max-width: 100%;
+	margin-inline: auto;
+}
+
+table {
+	max-width: 900px;
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid #DAE3F2;
+	margin-top: 30px;
+}
+
+th {
+	display: block;
+	background-color: #afd6b9;
+	padding: 17px 20px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #000;
+	text-align: left;
+	border-bottom: 1px solid #FFF;
+}
+@media screen and (min-width: 768px) {
+	th,td {
+		display: table-cell
+	}
+}
+
+td {
+	display: block;
+	background-color: #FFF;
+	padding: 17px 20px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #000;
+	text-align: left;
+	border-bottom: 1px solid #DAE3F2;
+}
+tr:last-of-type th {
+	border-bottom: none;
+}
+
+tr:last-of-type td {
+	border-bottom: none;
+}

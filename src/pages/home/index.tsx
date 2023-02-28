@@ -1,90 +1,86 @@
 import Card from "@/components/Card";
 import Loading from "@/components/Loading";
-import { queryAll } from "@/query/pokemon";
+import { queryAll, queryName } from "@/query/pokemon";
+import { IPokemonRes } from "@/type/pokemon";
 import { useLazyQuery } from "@apollo/client";
-import React, { useCallback, useEffect, useState } from "react";
-// import TableData from "../../components/TableData";
-// import Pagination from "../../components/Pagination";
-// import Loading from "../../components/Loading";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Search from "../../components/Search";
 
 const Home = () => {
-  console.log("Home page test");
+  const [dataSource, setDataSource] = useState<IPokemonRes>();
+  const { searchName } = useSelector((state: any) => state?.searchName);
 
-  const [getPokemons, { loading, error, data }] = useLazyQuery(queryAll, {
-    variables: { first: 30 },
+  const [getPokemons, { loading }] = useLazyQuery(queryAll, {
+    variables: { first: 200 },
+    onCompleted: (data) => {
+      setDataSource(data);
+    },
   });
+  const [getPokemonByName, { loading: loadingSearchName }] = useLazyQuery(
+    queryName,
+    {
+      variables: { name: searchName },
+      onCompleted: (data) => {
+        if (data?.pokemon) {
+          const obj: IPokemonRes = {
+            pokemons: [data?.pokemon],
+          };
+
+          setDataSource(obj);
+        } else {
+          setDataSource(undefined);
+        }
+      },
+    }
+  );
+
+  const renderNotFound = () => {
+    return (
+      <div className="inline-center">
+        <h1 style={{ padding: "10rem", color: "darkgrey" }}>Not Found</h1>
+      </div>
+    );
+  };
 
   useEffect(() => {
     getPokemons();
-  }, []);
+  }, [getPokemons]);
 
-  console.log("data =", data);
-
-  // const { dataContext, dataContextAction } = useDataContext();
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [totalCount, setTotalCount] = useState(0);
-  // const [dataSource, setDataSource] = useState([]);
-
-  // const getRepos = useCallback(async (text = "react", page = 1) => {
-  //   dataContextAction.setLoading(true);
-  //   const res = await getListRepos(text, page);
-  //   setTotalCount(res?.total_count / 10);
-  //   const obj = res?.items?.map((data) => {
-  //     return {
-  //       id: data?.id,
-  //       name: data?.name,
-  //       username: data?.owner?.login,
-  //       url: data?.url,
-  //       created_at: moment(data?.created_at).format("DD/MM/YYYY"),
-  //     };
-  //   });
-  //   setDataSource(obj);
-  //   dataContextAction.setLoading(false);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // const handleChangePage = useCallback(
-  //   async (page) => {
-  //     getRepos(dataContext?.searchData, page);
-  //     setCurrentPage(page);
-  //   },
-  //   [dataContext?.searchData, getRepos]
-  // );
-
-  // useEffect(() => {
-  //   getRepos();
-  // }, [getRepos]);
-
-  // useEffect(() => {
-  //   if (dataContext?.searchData) {
-  //     getRepos(dataContext?.searchData, 1);
-  //     setCurrentPage(1);
-  //   }
-  // }, [dataContext?.searchData, getRepos]);
-
-  if (loading) {
-    <Loading />;
-  }
+  useEffect(() => {
+    if (searchName && searchName !== "ALL") {
+      getPokemonByName();
+    } else {
+      getPokemons();
+    }
+  }, [searchName, getPokemonByName, getPokemons]);
 
   return (
     <div className="container">
       <Search />
 
-      <ul className="cards">
-        {data?.pokemons.length > 0 &&
-          data?.pokemons?.map((pokemon: any, i: number) => {
-            return (
-              <Card
-                img={pokemon.image}
-                name={pokemon.name}
-                number={pokemon.number}
-                classification={pokemon.classification}
-                key={i}
-              />
-            );
-          })}
-      </ul>
+      {!dataSource?.pokemons && searchName !== "ALL" && renderNotFound()}
+
+      {loading || loadingSearchName ? (
+        <Loading />
+      ) : (
+        <ul className="cards">
+          {(dataSource?.pokemons?.length || 0) > 0 &&
+            dataSource?.pokemons?.map((pokemon: any, i: number) => {
+              return (
+                <Card
+                  img={pokemon?.image}
+                  name={pokemon?.name}
+                  number={pokemon?.number}
+                  classification={pokemon?.classification}
+                  attack={pokemon?.attacks?.fast}
+                  specialAttack={pokemon?.attacks?.special}
+                  key={i}
+                />
+              );
+            })}
+        </ul>
+      )}
     </div>
   );
 };

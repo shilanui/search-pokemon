@@ -21,7 +21,10 @@ a {
   padding-bottom: 5rem;
 }
 
-// Navbar
+.pointer {
+  cursor: pointer;
+}
+
 .navbar input[type="checkbox"],
 .navbar .hamburger-lines {
   display: none;
@@ -43,6 +46,7 @@ a {
   font-size: 3rem;
   color: #eddb39;
   -webkit-text-stroke: 2.5px #326eaf;
+  padding: 0 1rem;
 }
 
 .navbar-container {
@@ -152,6 +156,7 @@ a {
 
 .search {
   margin-top: 7rem;
+  padding: 1rem;
 }
 
 input {
@@ -170,4 +175,61 @@ input:focus {
 .input-search-60 {
   width: 60%;
   transition: width 1s;
+}
+
+.no-bullet {
+  list-style-type: none;
+}
+
+.inline {
+  display: flex;
+  justify-content: space-between;
+}
+
+.inline-center {
+  display: flex;
+  justify-content: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.grid-wrapper {
+  display: grid;
+  grid-gap: 10px;
+  padding: 20px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "content content sidebar";
+}
+
+.section1 {
+  grid-column: 1;
+  margin-top: 2rem;
+}
+
+.section2 {
+  grid-column: 2/3;
+}
+
+@media screen and (max-width: 320px) {
+  .grid-wrapper {
+    display: block;
+  }
+}
+@media screen and (max-width: 425px) {
+  .grid-wrapper {
+    display: block;
+  }
+}
+@media screen and (max-width: 768px) {
+  .grid-wrapper {
+    display: block;
+  }
+  .section2 {
+    overflow: hidden;
+  }
+  .input-search {
+    width: 100%;
+  }
 }
