@@ -59,8 +59,6 @@ const Home = () => {
     <div className="container">
       <Search />
 
-      {!dataSource?.pokemons && searchName !== "ALL" && renderNotFound()}
-
       {loading || loadingSearchName ? (
         <Loading />
       ) : (
@@ -81,6 +79,11 @@ const Home = () => {
             })}
         </ul>
       )}
+
+      {!loading &&
+        !dataSource?.pokemons &&
+        searchName !== "ALL" &&
+        renderNotFound()}
     </div>
   );
 };
